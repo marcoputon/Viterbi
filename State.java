@@ -36,4 +36,13 @@ public class State{
         }
     }
 
+    public String get_next_z(){
+        return next_zero;
+    }
+
+    public String get_next_o(){
+        return next_one;
+    }
+
+
 }
