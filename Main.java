@@ -20,5 +20,6 @@ public class Main{
 
         StatesMachine sm = new StatesMachine(entrada, ruido);
         sm.run();
+		//sm.print_decodeds();
 	}
 }

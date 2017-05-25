@@ -45,20 +45,29 @@ public class StatesMachine{
 
         String atual = encoded.substring(0, 2);
         State s = states.get(state);
-        Integer aux_erro = erro;
+        Integer erro0 = erro;
+        Integer erro1 = erro;
 
         //  Por 0
         String emited = s.get_emit('0');
-        if(emited.charAt(0) != atual.charAt(0)) erro += 1;
-        if(emited.charAt(1) != atual.charAt(1)) erro += 1;
-        decoder(s.get_next_z(), encoded.substring(2, encoded.length()), decoded + "0", erro);
+        if(emited.charAt(0) != atual.charAt(0)) erro0 += 1;
+        if(emited.charAt(1) != atual.charAt(1)) erro0 += 1;
 
         //  Por 1
-        erro = aux_erro;
         emited = s.get_emit('1');
-        if(emited.charAt(0) != atual.charAt(0)) erro += 1;
-        if(emited.charAt(1) != atual.charAt(1)) erro += 1;
-        decoder(s.get_next_o(), encoded.substring(2, encoded.length()), decoded + "1", erro);
+        if(emited.charAt(0) != atual.charAt(0)) erro0 += 1;
+        if(emited.charAt(1) != atual.charAt(1)) erro1 += 1;
+
+        if(s.get_next_z().equals(s.get_next_o())){
+            if(erro0 <= erro1)
+                decoder(s.get_next_z(), encoded.substring(2, encoded.length()), decoded + "0", erro0);
+            else
+                decoder(s.get_next_o(), encoded.substring(2, encoded.length()), decoded + "1", erro1);
+        }
+        else{
+            decoder(s.get_next_z(), encoded.substring(2, encoded.length()), decoded + "0", erro0);
+            decoder(s.get_next_o(), encoded.substring(2, encoded.length()), decoded + "1", erro1);
+        }
     }
 
 
