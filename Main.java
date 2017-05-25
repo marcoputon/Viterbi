@@ -18,7 +18,7 @@ public class Main{
 		}
 
 
-        StatesMachine sm = new StatesMachine(entrada);
+        StatesMachine sm = new StatesMachine(entrada, ruido);
         sm.run();
     }
 }
