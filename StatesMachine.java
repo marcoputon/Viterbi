@@ -9,19 +9,23 @@ public class StatesMachine{
     private String emit;
     private HashMap<String, Line> lines;
 
+
     public StatesMachine(String input, float noise){
         this.states = new HashMap<String, State>();
         this.decodeds = new ArrayList<Decoded>();
         this.lines = new HashMap<String, Line>();
         this.lines.put("00", new Line("00", "", 0));
+
         this.states.put("00", new State("00", "00", "11", "00", "10"));
         this.states.put("01", new State("01", "11", "00", "00", "10"));
         this.states.put("10", new State("10", "10", "01", "01", "11"));
         this.states.put("11", new State("11", "01", "10", "01", "11"));
+
         this.input = input + "00";
         this.noise_rate = noise;
         this.emit = "";
     }
+
 
     public void run(){
         encoder("00" , input);
@@ -41,14 +45,12 @@ public class StatesMachine{
     }
 
 
-
     public void decoder(String encoded){
         if(encoded.equals("")){
             return;
         }
         HashMap<String, Line> iter_lines = new HashMap<String, Line>();
         Line l;
-
 
         for(String key : lines.keySet()){
             l = lines.get(key);
@@ -78,9 +80,6 @@ public class StatesMachine{
     }
 
 
-
-
-
     public Line next_level(Line l, String e_string, char input){;
         State s = this.states.get(l.state);
         Integer erro = 0;
@@ -88,11 +87,8 @@ public class StatesMachine{
         if(e_string.charAt(0) != s.get_emit(input).charAt(0)) erro += 1;
         if(e_string.charAt(1) != s.get_emit(input).charAt(1)) erro += 1;
 
-
         return new Line(s.get_next(input), l.decoded + input, l.erro + erro);
     }
-
-
 
 
     public void noise(){
@@ -119,11 +115,31 @@ public class StatesMachine{
         }
     }
 
+
     public void print_lines(){
         Line l;
         for(String key : lines.keySet()){
             l = lines.get(key);
             System.out.println(l.decoded + " - " + l.erro);
+        }
+    }
+
+    public void compare(String e){
+        Line l;
+        Integer dif;
+        String oi = "";
+
+        for(String key : lines.keySet()){
+            dif = 0;
+            l = lines.get(key);
+            oi = l.decoded.substring(0, l.decoded.length()-2);
+
+            for(int i = 0; i < oi.length(); i++){
+                if(e.charAt(i) != oi.charAt(i))
+                    dif += 1;
+            }
+
+            System.out.println(l.decoded + " | " + dif);
         }
     }
 }

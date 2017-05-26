@@ -22,5 +22,7 @@ public class Main{
         sm.run();
 		System.out.println("Lista de decodificados:");
 		sm.print_lines();
+
+		sm.compare(entrada);
 	}
 }
