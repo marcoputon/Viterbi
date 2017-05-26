@@ -20,6 +20,7 @@ public class Main{
 
         StatesMachine sm = new StatesMachine(entrada, ruido);
         sm.run();
-		//sm.print_decodeds();
+		System.out.println("Lista de decodificados:");
+		sm.print_lines();
 	}
 }
