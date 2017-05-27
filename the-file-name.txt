@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html>
+<body>
+<table style="width:100%">
+</body>
+</html>

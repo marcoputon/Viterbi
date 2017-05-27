@@ -21,8 +21,8 @@ public class Main{
         StatesMachine sm = new StatesMachine(entrada, ruido);
         sm.run();
 		System.out.println("Lista de decodificados:");
-		sm.print_lines();
+		//sm.print_lines();
 
-		sm.compare(entrada);
+		sm.table(entrada);
 	}
 }

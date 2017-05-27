@@ -6,8 +6,11 @@ public class StatesMachine{
     private List<Decoded> decodeds;
     private String input;
     private float noise_rate;
+    private String emit0;
     private String emit;
     private HashMap<String, Line> lines;
+    private PrintWriter writer;
+
 
 
     public StatesMachine(String input, float noise){
@@ -23,15 +26,32 @@ public class StatesMachine{
 
         this.input = input + "00";
         this.noise_rate = noise;
+        this.emit0 = "";
         this.emit = "";
+
+        this.writer = null;
+        try{
+            writer = new PrintWriter("tabela.html", "UTF-8");
+        }
+        catch(Exception E){
+            System.out.println("PERDI");
+        }
     }
 
 
     public void run(){
+        writer.println("<!DOCTYPE html>\n<html>\n<body>\n<table style=\"width:100%\">");
+        writer.printf("<p><b>erro:</b> %f</p>\n", this.noise_rate);
+        writer.printf("<p><b>entrada:</b> %s</p>\n", this.input);
+        writer.print("<table style=\"width:100%\">");
+
         encoder("00" , input);
-        System.out.println("\nCodificado: " + emit);
+        writer.print("<tr><td><b>Codificado</b></td></tr>\n");
+        writer.printf("<tr><td><b>s/ erro: </b>%s</td></tr>\n", this.emit);
+        writer.printf("<tr><td><b>c/ erro: </b>");
         noise();
-        System.out.println("Com ruído:  " + emit + "\n");
+        writer.printf("</td></tr>\n");
+        writer.print("</table>\n");
         decoder(emit);
     }
 
@@ -97,13 +117,19 @@ public class StatesMachine{
 
         for(int i = 0; i < this.emit.length(); i++){
             if(gerador.nextDouble() < this.noise_rate){
-                if(this.emit.charAt(i) == '0')
+                if(this.emit.charAt(i) == '0'){
                     noisy += "1";
-                else
+                    writer.print("<font color=\"red\">1</font>");
+                }
+                else{
                     noisy += "0";
+                    writer.print("<font color=\"red\">0</font>");
+                }
             }
-            else
+            else{
                 noisy += this.emit.charAt(i);
+                writer.print(this.emit.charAt(i));
+            }
         }
         this.emit = noisy;
     }
@@ -125,10 +151,12 @@ public class StatesMachine{
     }
 
     public void compare(String e){
+
         Line l;
         Integer dif;
         String oi = "";
 
+        System.out.printf ("%-30s %-10s %s\n", "<decod>", "<dif>", "<erro>");
         for(String key : lines.keySet()){
             dif = 0;
             l = lines.get(key);
@@ -138,8 +166,42 @@ public class StatesMachine{
                 if(e.charAt(i) != oi.charAt(i))
                     dif += 1;
             }
-
-            System.out.println(l.decoded + " | " + dif);
+            System.out.printf ("%-30s %-10d %d\n", l.decoded.substring(0, l.decoded.length()-2), dif, l.erro);
+            //System.out.println(l.decoded + " | " + dif + " | " + l.erro);
         }
+    }
+
+    public void table(String e){
+        writer.print("<br><table style=\"width:100%\">");
+
+        Line l;
+        Integer dif;
+        String oi = "";
+
+        System.out.printf ("%-30s %-10s %s\n", "<decod>", "<dif>", "<erro>");
+        writer.println("<tr>\n<td>" + "<b>Decodificado</b>" + "</td>\n<td>" + "<b>Diferença</b>" + "</td>\n<td>" + "<b>Erro</b>" + "</td>\n</td>");
+
+        for(String key : lines.keySet()){
+            writer.print("<tr>\n<td>");
+
+            dif = 0;
+            l = lines.get(key);
+            oi = l.decoded.substring(0, l.decoded.length()-2);
+
+            for(int i = 0; i < oi.length(); i++){
+                if(e.charAt(i) != oi.charAt(i)){
+                    dif += 1;
+                    writer.print("<font color=\"red\">" + oi.charAt(i) + "</font>");
+                }
+                else{
+                    writer.print(oi.charAt(i));
+                }
+            }
+            System.out.printf ("%-30s %-10d %d\n", l.decoded.substring(0, l.decoded.length()-2), dif, l.erro);
+            writer.println("</td>\n<td>" + dif + "</td>\n<td>" + l.erro + "</td>\n</tr>");
+        }
+
+        writer.println("</table>\n</body>\n</html>");
+        writer.close();
     }
 }
