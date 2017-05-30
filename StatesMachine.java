@@ -40,7 +40,7 @@ public class StatesMachine{
 
 
     public void run(){
-        writer.println("<!DOCTYPE html>\n<html>\n<body>\n<table style=\"width:100%\">");
+        writer.println("<!DOCTYPE html>\n<html>\n<head><meta charset=\"utf-8\"></head>\n<body>\n<table style=\"width:100%\">");
         writer.printf("<p><b>erro:</b> %f</p>\n", this.noise_rate);
         writer.printf("<p><b>entrada:</b> %s</p>\n", this.input);
         writer.print("<table style=\"width:100%\">");
@@ -175,7 +175,8 @@ public class StatesMachine{
         writer.print("<br><table style=\"width:100%\">");
 
         Line l;
-        Integer dif;
+        Line best = null;
+        Integer dif, dif_best = input.length() + 10;
         String oi = "";
 
         System.out.printf ("%-30s %-10s %s\n", "<decod>", "<dif>", "<erro>");
@@ -199,9 +200,25 @@ public class StatesMachine{
             }
             System.out.printf ("%-30s %-10d %d\n", l.decoded.substring(0, l.decoded.length()-2), dif, l.erro);
             writer.println("</td>\n<td>" + dif + "</td>\n<td>" + l.erro + "</td>\n</tr>");
+
+            if(dif < dif_best){
+                dif_best = dif;
+                best = lines.get(key);
+            }
         }
 
         writer.println("</table>\n</body>\n</html>");
+
+        writer.print("<h2><b>Resultado</b></h2>");
+        for(int i = 0; i < best.decoded.length() - 2; i++){
+            if(e.charAt(i) != best.decoded.charAt(i)){
+                writer.print("<font color=\"red\">" + best.decoded.charAt(i) + "</font>");
+            }
+            else{
+                writer.print(best.decoded.charAt(i));
+            }
+        }
+
         writer.close();
     }
 }
