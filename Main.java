@@ -24,5 +24,7 @@ public class Main{
 		//sm.print_lines();
 
 		sm.table(entrada);
+
+		System.out.println("\nARQUIVO DE RESPOSTA GERADO.\nABRA O ARQUIVO 'tabela.html' COM O SEU NAVEGADOR");
 	}
 }
